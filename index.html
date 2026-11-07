@@ -3,423 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pencari Hari - Doomsday Algorithm</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Doomsday Algorithm</title>
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-cyan: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-pink: #f472b6;
+            --accent-yellow: #fde047;
+            --accent-green: #4ade80;
+            --table-header-bg: rgba(56, 189, 248, 0.15);
+            --table-row-hover: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --input-border: rgba(255, 255, 255, 0.2);
+            --highlight-border: #38bdf8;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 50%, #e0e7ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(255, 255, 255, 0.6);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent-cyan: #0284c7;
+            --accent-purple: #7e22ce;
+            --accent-pink: #db2777;
+            --accent-yellow: #ca8a04;
+            --accent-green: #16a34a;
+            --table-header-bg: rgba(2, 132, 199, 0.1);
+            --table-row-hover: rgba(0, 0, 0, 0.03);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --input-border: rgba(0, 0, 0, 0.15);
+            --highlight-border: #0284c7;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-main);
+            padding: 24px 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
-        /* Custom Excel-styled table borders & colors */
-        .excel-table th, .excel-table td {
-            border: 1px solid rgba(255, 255, 255, 0.15);
+
+        .container {
+            max-width: 950px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 28px;
         }
-        .header-green {
-            background-color: #10b981;
-            color: #000;
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        h1 {
+            font-size: 22px;
             font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .header-teal {
-            background-color: #06b6d4;
-            color: #000;
+
+        /* Toggle Theme Button */
+        .theme-toggle {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        /* Navigasi Tab */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            color: var(--accent-cyan);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Glassmorphism Section & Cards */
+        .section-title {
+            font-size: 14px;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
         }
-        .cell-yellow {
-            background-color: #fef08a;
-            color: #000;
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 24px;
         }
-        .cell-pink {
-            background-color: #fce7f3;
-            color: #831843;
+
+        [data-theme="light"] .glass-card {
+            background: rgba(255, 255, 255, 0.4);
         }
-        .cell-peach {
-            background-color: #ffedd5;
-            color: #7c2d12;
+
+        /* Tables Modern */
+        table.custom-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table.custom-table th, table.custom-table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        table.custom-table th {
+            background-color: var(--table-header-bg);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        table.custom-table tr:hover {
+            background-color: var(--table-row-hover);
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        select:focus, input[type="number"]:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .tables-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr 1.3fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .tables-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .note-text {
+            text-align: left !important;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .highlight-row {
+            background: rgba(56, 189, 248, 0.2) !important;
+            box-shadow: inset 0 0 0 1px var(--highlight-border);
+            font-weight: bold;
+        }
+
+        .badge-result {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+
+        /* Styling Tab Edukasi */
+        .about-section {
+            line-height: 1.7;
+        }
+
+        .about-section h2 {
+            font-size: 16px;
+            color: var(--accent-cyan);
+            margin: 20px 0 10px 0;
+        }
+
+        .about-section p, .about-section ul, .about-section ol {
+            font-size: 14px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .about-section ul, .about-section ol {
+            margin-left: 20px;
+        }
+
+        .mnemonic-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 14px 18px;
+            margin: 16px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 13px;
+        }
+
+        code {
+            background: var(--input-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent-pink);
+            font-family: monospace;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
         }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body>
 
-    <div class="max-w-6xl mx-auto space-y-6">
-        
-        <!-- Header Judul -->
-        <div class="flex items-center justify-between border-b border-slate-700 pb-4">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-emerald-400 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-check"></i> Perhitungan Hari (Doomsday / Anchor Century)
-                </h1>
-                <p class="text-sm text-slate-400">Implementasi algoritma pencari hari berbasis rumus spreadsheet Excel</p>
-            </div>
-            <div class="hidden sm:block text-right">
-                <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-mono">Simulasi Interactive UI</span>
-            </div>
+<div class="container">
+    <div class="header-top">
+        <h1>Kalkulator & Algoritma Doomsday</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="themeIcon">🌙</span> <span id="themeText">Dark Mode</span>
+        </button>
+    </div>
+
+    <!-- Navigasi Tab -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('kalkulator', event)">📊 Kalkulator Interaktif</button>
+        <button class="tab-btn" onclick="switchTab('tentang', event)">📖 Tentang Algoritma</button>
+    </div>
+
+    <!-- TAB 1: KALKULATOR INTERAKTIF -->
+    <div id="kalkulator" class="tab-content active">
+        <!-- Input Tanggal -->
+        <div class="glass-card">
+            <div class="section-title">INPUT TANGGAL</div>
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>TANGGAL</th>
+                        <th>BULAN</th>
+                        <th>TAHUN (YYYY)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="number" id="inputTanggal" min="1" max="31" value="28" onchange="calculate()">
+                        </td>
+                        <td>
+                            <select id="inputBulan" onchange="calculate()">
+                                <option value="0">Januari</option>
+                                <option value="1">Februari</option>
+                                <option value="2">Maret</option>
+                                <option value="3" selected>April</option>
+                                <option value="4">Mei</option>
+                                <option value="5">Juni</option>
+                                <option value="6">Juli</option>
+                                <option value="7">Agustus</option>
+                                <option value="8">September</option>
+                                <option value="9">Oktober</option>
+                                <option value="10">November</option>
+                                <option value="11">Desember</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" id="inputTahun" min="1" max="9999" value="2002" onchange="calculate()">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- 1. INPUT TANGGAL -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <div class="header-green p-2 px-4 rounded-lg uppercase tracking-wider text-sm mb-4">
-                INPUT TANGGAL
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <!-- Select Tanggal -->
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1 font-semibold uppercase">TANGGAL</label>
-                    <select id="inputDay" onchange="calculateDay()" class="w-full bg-yellow-200 text-slate-900 font-bold p-3 rounded-xl border border-yellow-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer text-lg">
-                        <!-- Filled by JS -->
-                    </select>
-                </div>
-
-                <!-- Select Bulan -->
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1 font-semibold uppercase">BULAN</label>
-                    <select id="inputMonth" onchange="calculateDay()" class="w-full bg-yellow-200 text-slate-900 font-bold p-3 rounded-xl border border-yellow-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer text-lg">
-                        <option value="0">Januari</option>
-                        <option value="1">Februari</option>
-                        <option value="2">Maret</option>
-                        <option value="3" selected>April</option>
-                        <option value="4">Mei</option>
-                        <option value="5">Juni</option>
-                        <option value="6">Juli</option>
-                        <option value="7">Agustus</option>
-                        <option value="8">September</option>
-                        <option value="9">Oktober</option>
-                        <option value="10">November</option>
-                        <option value="11">Desember</option>
-                    </select>
-                </div>
-
-                <!-- Input Tahun -->
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1 font-semibold uppercase">TAHUN (YYYY)</label>
-                    <input type="number" id="inputYear" value="2002" min="1" max="9999" oninput="calculateDay()" class="w-full bg-yellow-200 text-slate-900 font-bold p-3 rounded-xl border border-yellow-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-lg font-mono">
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. TABEL PERHITUNGAN / REFERENSI KODE -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <div class="header-green p-2 px-4 rounded-lg uppercase tracking-wider text-sm mb-4">
-                TABEL REFERENSI KODE
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
+        <!-- Tabel Referensi Kode -->
+        <div class="glass-card">
+            <div class="section-title">TABEL REFERENSI PERHITUNGAN</div>
+            <div class="tables-layout">
                 <!-- Tabel Hari -->
-                <div>
-                    <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase">Kode Hari</h3>
-                    <table class="w-full text-sm text-center excel-table rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="header-teal">
-                                <th class="p-2">HARI</th>
-                                <th class="p-2">Kode</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableHariBody">
-                            <tr class="cell-pink"><td class="p-1 font-medium">Minggu</td><td class="p-1 font-bold">0</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Senin</td><td class="p-1 font-bold">1</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Selasa</td><td class="p-1 font-bold">2</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Rabu</td><td class="p-1 font-bold">3</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Kamis</td><td class="p-1 font-bold">4</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Jumat</td><td class="p-1 font-bold">5</td></tr>
-                            <tr class="cell-pink"><td class="p-1 font-medium">Sabtu</td><td class="p-1 font-bold">6</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabel Bulan -->
-                <div>
-                    <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase">Kode Bulan</h3>
-                    <table class="w-full text-sm text-center excel-table rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="header-teal">
-                                <th class="p-1.5 w-10">No</th>
-                                <th class="p-1.5">Bulan</th>
-                                <th class="p-1.5">Kode</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBulanBody" class="bg-slate-950 text-slate-300">
-                            <!-- Filled by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Tabel Abad -->
-                <div>
-                    <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase">Jangkar Abad (Century Anchor)</h3>
-                    <table class="w-full text-sm text-center excel-table rounded-lg overflow-hidden mb-3">
-                        <thead>
-                            <tr class="header-teal">
-                                <th class="p-2">Modulo Abad / 4</th>
-                                <th class="p-2">Kode</th>
-                            </tr>
-                        </thead>
-                        <tbody class="cell-peach">
-                            <tr><td class="p-1 font-bold">0</td><td class="p-1 font-bold">6</td></tr>
-                            <tr><td class="p-1 font-bold">1</td><td class="p-1 font-bold">4</td></tr>
-                            <tr><td class="p-1 font-bold">2</td><td class="p-1 font-bold">2</td></tr>
-                            <tr><td class="p-1 font-bold">3</td><td class="p-1 font-bold">0</td></tr>
-                        </tbody>
-                    </table>
-
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
-                        <p class="font-semibold text-slate-300">Contoh Abad:</p>
-                        <p>• <span class="text-amber-300 font-mono">Modulo 0 (Kode 6)</span>: misal 20xx, 24xx</p>
-                        <p>• <span class="text-amber-300 font-mono">Modulo 1 (Kode 4)</span>: misal 17xx, 21xx</p>
-                        <p>• <span class="text-amber-300 font-mono">Modulo 2 (Kode 2)</span>: misal 18xx, 22xx</p>
-                        <p>• <span class="text-amber-300 font-mono">Modulo 3 (Kode 0)</span>: misal 19xx, 23xx</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- 3. PERHITUNGAN & HASIL DETAIL -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <div class="header-green p-2 px-4 rounded-lg uppercase tracking-wider text-sm mb-4">
-                PERHITUNGAN & HASIL DETAIL
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse">
+                <table class="custom-table" id="tableHari">
                     <thead>
-                        <tr class="border-b border-slate-800 text-slate-400">
-                            <th class="p-3 w-1/3">LANGKAH PERHITUNGAN</th>
-                            <th class="p-3 text-center w-1/4">NILAI / HASIL</th>
-                            <th class="p-3">CATATAN & RUMUS EXCEL</th>
+                        <tr>
+                            <th>HARI</th>
+                            <th>Kode</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/60 font-mono">
-                        
-                        <!-- Tanggal -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">Tanggal</td>
-                            <td class="p-3 text-center cell-yellow font-bold text-base" id="resTanggal">28</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">sama dengan tanggal tak dirubah apapun</td>
-                        </tr>
+                    <tbody>
+                        <tr data-hari="0"><td>Minggu</td><td>0</td></tr>
+                        <tr data-hari="1"><td>Senin</td><td>1</td></tr>
+                        <tr data-hari="2"><td>Selasa</td><td>2</td></tr>
+                        <tr data-hari="3"><td>Rabu</td><td>3</td></tr>
+                        <tr data-hari="4"><td>Kamis</td><td>4</td></tr>
+                        <tr data-hari="5"><td>Jumat</td><td>5</td></tr>
+                        <tr data-hari="6"><td>Sabtu</td><td>6</td></tr>
+                    </tbody>
+                </table>
 
-                        <!-- Kode Bulan -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">Kode Bulan</td>
-                            <td class="p-3 text-center cell-pink font-bold text-base" id="resKodeBulan">6</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">didapat dari tabel diatas</td>
+                <!-- Tabel Bulan -->
+                <table class="custom-table" id="tableBulan">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Bulan</th>
+                            <th>Kode</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-bulan="0"><td>1</td><td>Januari</td><td>0</td></tr>
+                        <tr data-bulan="1"><td>2</td><td>Februari</td><td>3</td></tr>
+                        <tr data-bulan="2"><td>3</td><td>Maret</td><td>3</td></tr>
+                        <tr data-bulan="3"><td>4</td><td>April</td><td>6</td></tr>
+                        <tr data-bulan="4"><td>5</td><td>Mei</td><td>1</td></tr>
+                        <tr data-bulan="5"><td>6</td><td>Juni</td><td>4</td></tr>
+                        <tr data-bulan="6"><td>7</td><td>Juli</td><td>6</td></tr>
+                        <tr data-bulan="7"><td>8</td><td>Agustus</td><td>2</td></tr>
+                        <tr data-bulan="8"><td>9</td><td>September</td><td>5</td></tr>
+                        <tr data-bulan="9"><td>10</td><td>Oktober</td><td>0</td></tr>
+                        <tr data-bulan="10"><td>11</td><td>November</td><td>3</td></tr>
+                        <tr data-bulan="11"><td>12</td><td>Desember</td><td>5</td></tr>
+                    </tbody>
+                </table>
 
-                        <!-- Kode Modulo Abad / 4 -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">Kode Modulo Abad / 4</td>
-                            <td class="p-3 text-center cell-peach font-bold text-base" id="resKodeAbad">6</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">Modulo adalah sisa bagi, Abad = 100 tahunan, kode didapat dari tabel</td>
+                <!-- Tabel Jangkar Abad -->
+                <table class="custom-table" id="tableAbad">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Jangkar Abad (Century Anchor)</th>
                         </tr>
-
-                        <!-- YY (2 digit belakang) -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">YY "YY"</td>
-                            <td class="p-3 text-center bg-slate-800 text-emerald-400 font-bold text-base" id="resYY">02</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">2 digit belakang tahun</td>
+                        <tr>
+                            <th>Mod / 4</th>
+                            <th>Kode</th>
+                            <th>Contoh</th>
                         </tr>
-
-                        <!-- Pembulatan ke bwh YY / 4 -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">Pembltn ke bwh YY"YY" / 4</td>
-                            <td class="p-3 text-center bg-slate-800 text-emerald-400 font-bold text-base" id="resYYDiv4">0</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">2 digit belakang tahun dibagi 4 lalu dibulatkan ke bawah</td>
-                        </tr>
-
-                        <!-- Total Jumlah -->
-                        <tr class="bg-slate-950 font-bold">
-                            <td class="p-3 font-sans text-slate-200">Jumlah =</td>
-                            <td class="p-3 text-center bg-slate-700 text-white font-bold text-lg" id="resJumlah">42</td>
-                            <td class="p-3 font-sans text-xs text-slate-400 font-normal">Jumlah hasil sebelumnya</td>
-                        </tr>
-
-                        <!-- Kode Hari Sebelum Kabisat -->
-                        <tr class="hover:bg-slate-800/40">
-                            <td class="p-3 font-sans font-medium text-slate-300">Kode Hari = Modulo Jumlah / 7 =</td>
-                            <td class="p-3 text-center bg-slate-800 text-amber-300 font-bold text-base" id="resModulo7">0</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">Modulo (sisa bagi) 7 dari jumlah</td>
-                        </tr>
-
-                        <!-- Separator / Kabisat Section -->
-                        <tr class="bg-slate-800/20">
-                            <td class="p-3 font-sans font-medium text-slate-300">Tahun Kabisat ?</td>
-                            <td class="p-3 text-center font-bold" id="resIsKabisat">TIDAK</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">Apakah tahun bisa dibagi 4 (atau abad bisa dibagi 400)?</td>
-                        </tr>
-                        
-                        <tr class="bg-slate-800/20">
-                            <td class="p-3 font-sans font-medium text-slate-300">Bulan Januari / Februari ?</td>
-                            <td class="p-3 text-center font-bold" id="resIsJanFeb">TIDAK</td>
-                            <td class="p-3 font-sans text-xs text-slate-400">Koreksi khusus hanya untuk bulan Jan & Feb</td>
-                        </tr>
-
-                        <tr class="bg-slate-800/20">
-                            <td class="p-3 font-sans font-medium text-slate-300">Jika keduanya "YA" maka -1</td>
-                            <td class="p-3 text-center font-bold text-rose-400" id="resKabisatDeduction">0</td>
-                            <td class="p-3 font-sans text-xs text-slate-400" rowspan="2">
-                                *Khusus Tahun Kabisat di bulan januari & February Hasil dikurangi 1, jika tidak skip hasil akhir kode hari
-                            </td>
-                        </tr>
-
-                        <tr class="bg-slate-800/20">
-                            <td class="p-3 font-sans font-medium text-slate-300">Hasil akhir Kode hari</td>
-                            <td class="p-3 text-center bg-slate-800 text-cyan-400 font-bold text-base" id="resFinalCode">0</td>
-                        </tr>
-
-                        <!-- RESULT BANNER -->
-                        <tr class="header-green">
-                            <td class="p-4 font-sans font-bold text-lg text-slate-950">Hari =</td>
-                            <td class="p-4 text-center font-sans font-extrabold text-2xl text-slate-950 tracking-wider" id="resHariFinal">Minggu</td>
-                            <td class="p-4 font-sans text-sm font-semibold text-slate-900 uppercase tracking-widest">HASIL UTAMA</td>
-                        </tr>
-
+                    </thead>
+                    <tbody>
+                        <tr data-abad="0"><td>0</td><td>6</td><td>20xx, 24xx</td></tr>
+                        <tr data-abad="1"><td>1</td><td>4</td><td>17xx, 21xx</td></tr>
+                        <tr data-abad="2"><td>2</td><td>2</td><td>18xx, 22xx</td></tr>
+                        <tr data-abad="3"><td>3</td><td>0</td><td>19xx, 23xx</td></tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
 
+        <!-- Perhitungan & Hasil -->
+        <div class="glass-card">
+            <div class="section-title">PERHITUNGAN STEP-BY-STEP</div>
+            <table class="custom-table">
+                <tbody>
+                    <tr>
+                        <td width="35%">Tanggal</td>
+                        <td width="15%" id="resTanggal">28</td>
+                        <td class="note-text">Sama dengan tanggal input</td>
+                    </tr>
+                    <tr>
+                        <td>Kode Bulan</td>
+                        <td id="resKodeBulan">6</td>
+                        <td class="note-text">Didapat dari tabel bulan</td>
+                    </tr>
+                    <tr>
+                        <td>Kode Modulo Abad / 4</td>
+                        <td id="resKodeAbad">6</td>
+                        <td class="note-text">Sisa bagi abad dibagi 4</td>
+                    </tr>
+                    <tr>
+                        <td>YY (2 Digit Belakang)</td>
+                        <td id="resYY">02</td>
+                        <td class="note-text">2 digit terakhir tahun</td>
+                    </tr>
+                    <tr>
+                        <td>Pembulatan YY / 4</td>
+                        <td id="resYYDiv4">0</td>
+                        <td class="note-text">2 digit tahun dibagi 4 (dibulatkan ke bawah)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jumlah Total =</strong></td>
+                        <td id="resJumlah" style="font-weight: bold; color: var(--accent-cyan);">42</td>
+                        <td class="note-text">Penjumlahan seluruh nilai di atas</td>
+                    </tr>
+                    <tr>
+                        <td>Kode Hari = Modulo Jumlah / 7</td>
+                        <td id="resKodeHariMod">0</td>
+                        <td class="note-text" id="resNamaHariTemp">Minggu | Sisa bagi 7</td>
+                    </tr>
+                    <tr>
+                        <td>Tahun Kabisat ?</td>
+                        <td id="resIsKabisat">TIDAK</td>
+                        <td class="note-text">Pengecekan tahun kabisat</td>
+                    </tr>
+                    <tr>
+                        <td>Bulan Januari / Februari ?</td>
+                        <td id="resIsJanFeb">TIDAK</td>
+                        <td class="note-text">Pengecekan awal tahun</td>
+                    </tr>
+                    <tr>
+                        <td>Koreksi Kabisat (-1)</td>
+                        <td id="resKabisatDeduction">0</td>
+                        <td class="note-text">Dikurangi 1 jika Kabisat DAN di bulan Jan/Feb</td>
+                    </tr>
+                    <tr>
+                        <td>Hasil Akhir Kode Hari</td>
+                        <td id="resFinalCode" style="font-weight: bold;">0</td>
+                        <td class="note-text">Hasil akhir setelah koreksi</td>
+                    </tr>
+                    <tr style="background: rgba(74, 222, 128, 0.1);">
+                        <td style="font-size: 16px; font-weight: bold;">HARI AKHIR =</td>
+                        <td id="resFinalHari" class="badge-result">Minggu</td>
+                        <td class="note-text" style="font-weight: bold; color: var(--accent-green);">Hasil perhitungan akhir</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- SCRIPT LOGIKA MATEMATIKA DOOMSDAY & EXCEL -->
-    <script>
-        // Array Data Referensi
-        const namaBulan = [
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-        ];
-        
-        // Kode Bulan sesuai tabel spreadsheet user
-        const kodeBulanArr = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
+    <!-- TAB 2: TENTANG ALGORITMA -->
+    <div id="tentang" class="tab-content">
+        <div class="glass-card about-section">
+            <h2>Pengenalan Algoritma Doomsday</h2>
+            <p><strong>Algoritma Doomsday (Aturan Hari Kiamat)</strong> adalah metode matematika yang diciptakan oleh matematikawan <strong>John Conway</strong> untuk menentukan hari dalam seminggu untuk tanggal berapa pun secara cepat di luar kepala (mental calculation).</p>
+            <p>Konsep utamanya adalah bahwa dalam setiap tahun, ada serangkaian tanggal "khusus" (disebut Doomsday) yang selalu jatuh pada hari yang sama dalam seminggu untuk tahun tersebut.</p>
 
-        // Kode Hari (0=Minggu, 1=Senin, ..., 6=Sabtu)
-        const namaHariArr = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            <div class="mnemonic-box">
+                <strong>💡 Tanggal Doomsday & Cara Menghafal Cepat:</strong>
+                <ul>
+                    <li><strong>Bulan Genap:</strong> Tanggalnya persis sama dengan bulannya! <br><code>4/4</code> (4 Apr), <code>6/6</code> (6 Jun), <code>8/8</code> (8 Agu), <code>10/10</code> (10 Okt), dan <code>12/12</code> (12 Des).</li>
+                    <li><strong>Aturan Pasangan "9-to-5" & "7-Eleven":</strong> 
+                        <br>Bulan 9 & 5 berpasangan: <code>9/5</code> (5 Sep) & <code>5/9</code> (9 Mei).
+                        <br>Bulan 7 & 11 berpasangan: <code>7/11</code> (11 Jul) & <code>11/7</code> (7 Nov).
+                    </li>
+                    <li><strong>Bulan Lainnya:</strong>
+                        <br>Januari: <code>3 Jan</code> (tahun biasa) / <code>4 Jan</code> (tahun kabisat).
+                        <br>Februari: <code>28 Feb</code> (tahun biasa) / <code>29 Feb</code> (tahun kabisat).
+                        <br>Maret: <code>14 Maret</code> (Pi Day / 3.14).
+                    </li>
+                </ul>
+            </div>
 
-        // Kode Abad (Modulo 4 -> Kode)
-        // 0 -> 6, 1 -> 4, 2 -> 2, 3 -> 0
-        const kodeAbadMap = { 0: 6, 1: 4, 2: 2, 3: 0 };
+            <h2>Langkah-Langkah Perhitungan</h2>
+            <ol>
+                <li><strong>Tentukan "Doomsday" Abad (Century Anchor):</strong> Tentukan kode hari dasar abad (misal abad 2000-an berkode 6 / Minggu).</li>
+                <li><strong>Hitung Komponen Tahun:</strong> Ambil 2 digit terakhir tahun tersebut, lalu tambahkan dengan hasil pembagian bulatnya dengan 4.</li>
+                <li><strong>Cari Tanggal Patokan Terdekat:</strong> Hitung selisih tanggal target dengan tanggal Doomsday bulan tersebut.</li>
+                <li><strong>Hitung Modulo 7:</strong> Jumlahkan komponen dan ambil sisa baginya saat dibagi 7. Sisa bagi (0–6) menentukan harinya.</li>
+            </ol>
+        </div>
+    </div>
 
-        // Inisialisasi Dropdown Tanggal 1-31
-        const selectDay = document.getElementById('inputDay');
-        for (let i = 1; i <= 31; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.textContent = i;
-            if (i === 28) opt.selected = true;
-            selectDay.appendChild(opt);
+    <!-- Footer & Copyright MIT License -->
+    <footer>
+        <p>Copyright &copy; <span id="year"></span> Raymundus Erik Chandra Yunanta. Released under the <strong>MIT License</strong>.</p>
+        <p style="margin-top: 4px; font-size: 11px;">
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files to deal in the Software without restriction.
+        </p>
+    </footer>
+</div>
+
+<script>
+    const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const kodeBulanArr = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
+    const kodeAbadArr = [6, 4, 2, 0]; 
+
+    function isKabisat(tahun) {
+        return (tahun % 4 === 0 && tahun % 100 !== 0) || (tahun % 400 === 0);
+    }
+
+    /* Toggle Dark / Light Theme */
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeIcon').innerText = '🌙';
+            document.getElementById('themeText').innerText = 'Dark Mode';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.getElementById('themeIcon').innerText = '☀️';
+            document.getElementById('themeText').innerText = 'Light Mode';
         }
+    }
 
-        // Render Tabel Referensi Bulan
-        const tableBulanBody = document.getElementById('tableBulanBody');
-        namaBulan.forEach((b, idx) => {
-            const tr = document.createElement('tr');
-            tr.id = `row-bulan-${idx}`;
-            tr.innerHTML = `
-                <td class="p-1">${idx + 1}</td>
-                <td class="p-1 text-left px-3">${b}</td>
-                <td class="p-1 font-bold text-amber-300">${kodeBulanArr[idx]}</td>
-            `;
-            tableBulanBody.appendChild(tr);
+    /* Tab Switcher */
+    function switchTab(tabId, event) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    /* Main Calculator Logic */
+    function calculate() {
+        const tgl = parseInt(document.getElementById('inputTanggal').value) || 1;
+        const bln = parseInt(document.getElementById('inputBulan').value);
+        const thn = parseInt(document.getElementById('inputTahun').value) || 2000;
+
+        document.getElementById('resTanggal').innerText = tgl;
+
+        const kBulan = kodeBulanArr[bln];
+        document.getElementById('resKodeBulan').innerText = kBulan;
+
+        const abad = Math.floor(thn / 100);
+        const modAbad = abad % 4;
+        const kAbad = kodeAbadArr[modAbad];
+        document.getElementById('resKodeAbad').innerText = kAbad;
+
+        const yy = thn % 100;
+        document.getElementById('resYY').innerText = yy < 10 ? '0' + yy : yy;
+
+        const yyDiv4 = Math.floor(yy / 4);
+        document.getElementById('resYYDiv4').innerText = yyDiv4;
+
+        const jumlah = tgl + kBulan + kAbad + yy + yyDiv4;
+        document.getElementById('resJumlah').innerText = jumlah;
+
+        const kHariMod = jumlah % 7;
+        document.getElementById('resKodeHariMod').innerText = kHariMod;
+        document.getElementById('resNamaHariTemp').innerText = `${namaHari[kHariMod]} | Sisa bagi 7`;
+
+        const kabisat = isKabisat(thn);
+        const isJanFeb = (bln === 0 || bln === 1);
+        
+        document.getElementById('resIsKabisat').innerText = kabisat ? "YA" : "TIDAK";
+        document.getElementById('resIsJanFeb').innerText = isJanFeb ? "YA" : "TIDAK";
+
+        let potongKabisat = (kabisat && isJanFeb) ? 1 : 0;
+        document.getElementById('resKabisatDeduction').innerText = potongKabisat;
+
+        let finalCode = (kHariMod - potongKabisat + 7) % 7;
+        document.getElementById('resFinalCode').innerText = finalCode;
+        document.getElementById('resFinalHari').innerText = namaHari[finalCode];
+
+        highlightTables(finalCode, bln, modAbad);
+    }
+
+    function highlightTables(hariIdx, bulanIdx, abadModIdx) {
+        document.querySelectorAll('#tableHari tbody tr').forEach(tr => {
+            tr.classList.remove('highlight-row');
+            if (parseInt(tr.getAttribute('data-hari')) === hariIdx) tr.classList.add('highlight-row');
         });
 
-        // Cek Tahun Kabisat
-        function isLeapYear(year) {
-            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-        }
+        document.querySelectorAll('#tableBulan tbody tr').forEach(tr => {
+            tr.classList.remove('highlight-row');
+            if (parseInt(tr.getAttribute('data-bulan')) === bulanIdx) tr.classList.add('highlight-row');
+        });
 
-        // Fungsi Utama Kalkulasi (Dijalankan setiap ada perubahan input)
-        function calculateDay() {
-            const day = parseInt(document.getElementById('inputDay').value) || 1;
-            const monthIdx = parseInt(document.getElementById('inputMonth').value) || 0;
-            const yearInput = document.getElementById('inputYear').value;
-            const year = parseInt(yearInput) || 2002;
+        document.querySelectorAll('#tableAbad tbody tr').forEach(tr => {
+            tr.classList.remove('highlight-row');
+            if (parseInt(tr.getAttribute('data-abad')) === abadModIdx) tr.classList.add('highlight-row');
+        });
+    }
 
-            // 1. Tanggal
-            document.getElementById('resTanggal').textContent = day;
+    // Set Copyright Year
+    document.getElementById('year').innerText = new Date().getFullYear();
 
-            // 2. Kode Bulan
-            const kodeBulan = kodeBulanArr[monthIdx];
-            document.getElementById('resKodeBulan').textContent = kodeBulan;
+    // Initial Run
+    calculate();
+</script>
 
-            // Highlight baris bulan aktif di tabel referensi
-            namaBulan.forEach((_, idx) => {
-                const el = document.getElementById(`row-bulan-${idx}`);
-                if (idx === monthIdx) {
-                    el.className = "bg-indigo-600 text-white font-bold";
-                } else {
-                    el.className = "hover:bg-slate-800";
-                }
-            });
-
-            // 3. Abad & Modulo Abad
-            const abad = Math.floor(year / 100);
-            const moduloAbad = abad % 4;
-            const kodeAbad = kodeAbadMap[moduloAbad];
-            document.getElementById('resKodeAbad').textContent = kodeAbad;
-
-            // 4. YY (2 digit belakang tahun)
-            const yy = year % 100;
-            const strYY = yy < 10 ? '0' + yy : '' + yy;
-            document.getElementById('resYY').textContent = strYY;
-
-            // 5. Pembulatan ke bawah YY / 4
-            const yyDiv4 = Math.floor(yy / 4);
-            document.getElementById('resYYDiv4').textContent = yyDiv4;
-
-            // 6. Total Jumlah
-            const totalJumlah = day + kodeBulan + kodeAbad + yy + yyDiv4;
-            document.getElementById('resJumlah').textContent = totalJumlah;
-
-            // 7. Modulo 7 dari Jumlah
-            const modulo7 = totalJumlah % 7;
-            document.getElementById('resModulo7').textContent = modulo7;
-
-            // 8. Cek Tahun Kabisat & Bulan Jan/Feb
-            const kabisat = isLeapYear(year);
-            const isJanFeb = (monthIdx === 0 || monthIdx === 1);
-
-            document.getElementById('resIsKabisat').textContent = kabisat ? "YA" : "TIDAK";
-            document.getElementById('resIsKabisat').className = kabisat ? "p-3 text-center font-bold text-emerald-400" : "p-3 text-center font-bold text-slate-400";
-
-            document.getElementById('resIsJanFeb').textContent = isJanFeb ? "YA" : "TIDAK";
-            document.getElementById('resIsJanFeb').className = isJanFeb ? "p-3 text-center font-bold text-emerald-400" : "p-3 text-center font-bold text-slate-400";
-
-            // Deductions & Final Code
-            let finalCode = modulo7;
-            let deduction = 0;
-
-            if (kabisat && isJanFeb) {
-                deduction = -1;
-                finalCode = (modulo7 - 1 + 7) % 7;
-            }
-
-            document.getElementById('resKabisatDeduction').textContent = deduction;
-            document.getElementById('resFinalCode').textContent = finalCode;
-
-            // Nama Hari Final
-            const finalHariName = namaHariArr[finalCode];
-            document.getElementById('resHariFinal').textContent = finalHariName;
-
-            // Highlight baris hari aktif di tabel referensi hari
-            const tableHariBody = document.getElementById('tableHariBody');
-            const rows = tableHariBody.querySelectorAll('tr');
-            rows.forEach((row, idx) => {
-                if (idx === finalCode) {
-                    row.className = "bg-emerald-500 text-slate-950 font-bold scale-105 transition-transform";
-                } else {
-                    row.className = "cell-pink";
-                }
-            });
-        }
-
-        // Run pertama kali saat load
-        calculateDay();
-    </script>
 </body>
 </html>
